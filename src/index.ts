@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import dotenv from 'dotenv';
+import { dedent } from 'ts-dedent';
 import {ChatGPTAPIBrowser, ChatResponse} from 'chatgpt';
 import TelegramBot from 'node-telegram-bot-api';
 
@@ -128,15 +129,17 @@ async function main() {
       case '/help':
         await bot.sendMessage(
           msg.chat.id,
-          'To chat with me, you can:\n' +
-            '  • send messages directly (not supported in groups)\n' +
-            `  • send messages that start with ${chatCmd}\n` +
-            '  • reply to my last message\n\n' +
-            'Command list:\n' +
-            `(When using a command in a group, make sure to include a mention after the command, like /help@${botUsername}).\n` +
-            '  • /help Show help information.\n' +
-            '  • /reset Reset the current chat thread and start a new one.\n' +
-            '  • /reload (admin required) Refresh the ChatGPT session.'
+          dedent`
+          To chat with me, you can:
+              • send messages directly (not supported in groups)
+              • send messages that start with ${chatCmd}
+              • reply to my last message
+            Command list:
+            (When using a command in a group, make sure to include a mention after the command, like /help@${botUsername}).
+              • /help Show help information.
+              • /reset Reset the current chat thread and start a new one.
+              • /reload (admin required) Refresh the ChatGPT session.
+          `
         );
         break;
 

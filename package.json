@@ -48,6 +48,7 @@
     "dotenv": "^16.0.3",
     "lodash": "^4.17.21",
     "node-telegram-bot-api": "^0.60.0",
-    "puppeteer": "^19.4.1"
+    "puppeteer": "^19.4.1",
+    "ts-dedent": "^2.2.0"
   }
 }

@@ -78,7 +78,7 @@ async function main() {
       if (ownerIdList.length != 0 && ownerIdList.indexOf(msg.chat.id) == -1) {
         await bot.sendMessage(
           msg.chat.id,
-          '⛔️ Sorry, you are not my owner. I cannot chat with you or execute your command.'
+          '⛔️ Извините, вы не мой владелец. Я не могу общаться с вами или выполнять ваши команды.'
         );
         logWithTime(
           '⚠️ Authentication failed for user ' +
@@ -90,7 +90,7 @@ async function main() {
       if (groupIdList.length != 0 && groupIdList.indexOf(msg.chat.id) == -1) {
         await bot.sendMessage(
           msg.chat.id,
-          "⛔️ Sorry, I'm not supposed to work here. Please remove me from the group."
+          "⛔️ Извините, мне не разрещено общаться здесь. Пожалуйста, удалите меня из группы."
         );
         logWithTime(
           `⚠️ Authentication failed for group ${msg.chat.title} (${msg.chat.id}).`
@@ -128,15 +128,15 @@ async function main() {
       case '/help':
         await bot.sendMessage(
           msg.chat.id,
-          'To chat with me, you can:\n' +
-            '  • send messages directly (not supported in groups)\n' +
-            `  • send messages that start with ${chatCmd}\n` +
-            '  • reply to my last message\n\n' +
-            'Command list:\n' +
-            `(When using a command in a group, make sure to include a mention after the command, like /help@${botUsername}).\n` +
-            '  • /help Show help information.\n' +
-            '  • /reset Reset the current chat thread and start a new one.\n' +
-            '  • /reload (admin required) Refresh the ChatGPT session.'
+          'Для общения со мной вы можете:\n' +
+            '  • отправить сообщение напрямую (не доступно в группах)\n' +
+            `  • отправить сообщение которое начинается с ${chatCmd}\n` +
+            '  • ответить на мое последнее сообщение\n\n' +
+            'Список команд:\n' +
+            `(Используя команды в группе, не забудьте указать упоминания, по примеру /help@${botUsername}).\n` +
+            '  • /help Показать помощь.\n' +
+            '  • /reset Очистить текущий диалог и начать новый.\n' +
+            '  • /reload (только админам) Обновить ChatGPT сессию.'
         );
         break;
 
@@ -145,7 +145,7 @@ async function main() {
         await api.resetThread();
         await bot.sendMessage(
           msg.chat.id,
-          '🔄 The chat thread has been reset. New chat thread started.'
+          '🔄 Диалог был сброшен. Новый диалог начат.'
         );
         logWithTime(`🔄 Chat thread reset by ${userInfo}.`);
         break;
@@ -154,7 +154,7 @@ async function main() {
         if (ownerIdList.indexOf(msg.from?.id ?? 0) == -1) {
           await bot.sendMessage(
             msg.chat.id,
-            '⛔️ Sorry, you do not have the permission to run this command.'
+            '⛔️ Извините, у вас нет прав выполнять эту команду.'
           );
           logWithTime(
             `⚠️ Permission denied for "${command}" from ${userInfo}.`
@@ -162,7 +162,7 @@ async function main() {
         } else {
           await bot.sendChatAction(msg.chat.id, 'typing');
           await api.refreshSession();
-          await bot.sendMessage(msg.chat.id, '🔄 Session refreshed.');
+          await bot.sendMessage(msg.chat.id, '🔄 Сессия обновлена.');
           logWithTime(`🔄 Session refreshed by ${userInfo}.`);
         }
         break;
@@ -170,7 +170,7 @@ async function main() {
       default:
         await bot.sendMessage(
           msg.chat.id,
-          '⚠️ Unsupported command. Run /help to see the usage.'
+          '⚠️ Незивестная команда. Выполните /help посмотреть список команд.'
         );
         break;
     }
@@ -219,7 +219,7 @@ async function main() {
       logWithTime('⛔️ ChatGPT API error:', (err as Error).message);
       bot.sendMessage(
         chatId,
-        "⚠️ Sorry, I'm having trouble connecting to the server, please try again later."
+        "⚠️ Извините, возникли некоторые проблемы при подключении к серверу, попробуйте позже."
       );
     }
   }

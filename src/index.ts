@@ -3,14 +3,12 @@ import dotenv from 'dotenv';
 import { dedent } from 'ts-dedent';
 import {ChatGPTAPIBrowser, ChatResponse} from 'chatgpt';
 import TelegramBot from 'node-telegram-bot-api';
+import { ContextStorage } from './storage/types.js';
+import { InMemoryStorage } from './storage/inMemoryStorage.js'
 
 dotenv.config();
 const DEBUG = parseInt(process.env.DEBUG || '0');
 
-interface ChatContext {
-  conversationId?: string;
-  parentMessageId?: string;
-}
 
 async function main() {
   // Initialize ChatGPT API.
@@ -25,8 +23,10 @@ async function main() {
     captchaToken: process.env.CAPTCHA_TOKEN || undefined,
   });
   await api.initSession();
-  let chatContext: ChatContext = {};
   logWithTime('🔮 ChatGPT API has started...');
+
+  // Initialize context storage
+  const storage: ContextStorage = new InMemoryStorage()
 
   // Initialize Telegram Bot
   const bot = new TelegramBot(process.env.BOT_TOKEN || '', {polling: true});
@@ -145,7 +145,7 @@ async function main() {
 
       case '/reset':
         await bot.sendChatAction(msg.chat.id, 'typing');
-        await api.resetThread();
+        await storage.reset(msg.chat.id.toString())
         await bot.sendMessage(
           msg.chat.id,
           '🔄 The chat thread has been reset. New chat thread started.'
@@ -198,6 +198,10 @@ async function main() {
     });
     bot.sendChatAction(chatId, 'typing');
 
+    // Get context
+    const identifier = msg.chat.id.toString()
+    
+    const chatContext = await storage.get(identifier) || {} 
     // Send message to ChatGPT
     try {
       const res = await api.sendMessage(text, {
@@ -213,10 +217,12 @@ async function main() {
         ),
       });
       await editMessage(reply, res.response);
-      chatContext = {
+
+      await storage.set(identifier, {
         conversationId: res.conversationId,
         parentMessageId: res.messageId,
-      };
+      })
+
       if (DEBUG >= 1) logWithTime(`📨 Response:\n${res.response}`);
     } catch (err) {
       logWithTime('⛔️ ChatGPT API error:', (err as Error).message);
